@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<circuit>
+  <version>1</version>
+  <attributes/>
+  <visualElements>
+    <visualElement>
+      <elementName>MqttOutByte</elementName>
+      <elementAttributes/>
+      <pos x="40" y="120"/>
+    </visualElement>
+    <visualElement>
+      <elementName>LED</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>Connected</string>
+        </entry>
+      </elementAttributes>
+      <pos x="140" y="140"/>
+    </visualElement>
+    <visualElement>
+      <elementName>In</elementName>
+      <elementAttributes>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="3"/>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>Data</string>
+        </entry>
+        <entry>
+          <string>Bits</string>
+          <int>8</int>
+        </entry>
+      </elementAttributes>
+      <pos x="0" y="40"/>
+    </visualElement>
+    <visualElement>
+      <elementName>Button</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>Send</string>
+        </entry>
+        <entry>
+          <string>rotation</string>
+          <rotation rotation="1"/>
+        </entry>
+      </elementAttributes>
+      <pos x="-20" y="240"/>
+    </visualElement>
+    <visualElement>
+      <elementName>DipSwitch</elementName>
+      <elementAttributes>
+        <entry>
+          <string>Label</string>
+          <string>Connect</string>
+        </entry>
+      </elementAttributes>
+      <pos x="-40" y="140"/>
+    </visualElement>
+  </visualElements>
+  <wires>
+    <wire>
+      <p1 x="-20" y="160"/>
+      <p2 x="40" y="160"/>
+    </wire>
+    <wire>
+      <p1 x="0" y="120"/>
+      <p2 x="40" y="120"/>
+    </wire>
+    <wire>
+      <p1 x="-40" y="140"/>
+      <p2 x="40" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="100" y="140"/>
+      <p2 x="140" y="140"/>
+    </wire>
+    <wire>
+      <p1 x="0" y="40"/>
+      <p2 x="0" y="120"/>
+    </wire>
+    <wire>
+      <p1 x="-20" y="160"/>
+      <p2 x="-20" y="240"/>
+    </wire>
+  </wires>
+  <measurementOrdering/>
+</circuit>
