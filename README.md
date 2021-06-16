@@ -9,8 +9,8 @@ Custom Digital component to send messages to a MTQ broker from a Digital circuit
 Will send a byte to a configured MQTT broker / topic.
 
 #### Settings
-- Broker (ex: )
-- Topic (ex: /)
+- Broker (ex: tcp://test.mosquitto.org:1883)
+- Topic (ex: /digital/mqtt/test01)
 
 #### Inputs
 - cc: 1 bit input. On change from 0 to 1, the component will connect to the configured MQTT broker / topic. On change from 1 to 0, the client will disconnect (takes some time).
@@ -22,9 +22,9 @@ Will send a byte to a configured MQTT broker / topic.
 
 ### Test circuit
 
-![TST01.dig](content/TST01.dig.png)
+![TST01_dig](content/TST01.dig.png)
 
-![TST01.cfg](content/TST01.cfg.png)
+![TST01_cfg](content/TST01.cfg.png)
 
 Note: Not threaded, so all actions will freeze Digital simulation. 
 
