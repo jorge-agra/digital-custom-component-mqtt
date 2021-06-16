@@ -22,9 +22,9 @@ Will send a byte to a configured MQTT broker / topic.
 
 ### Test circuit
 
-![TST01_dig](content/TST01.dig.png)
+![TST01_dig](content/tst01dig.png)
 
-![TST01_cfg](content/TST01.cfg.png)
+![TST01_cfg](content/tst01cfg.png)
 
 Note: Not threaded, so all actions will freeze Digital simulation. 
 
