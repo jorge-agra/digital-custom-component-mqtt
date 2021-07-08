@@ -39,6 +39,7 @@ Note: Not threaded, so all actions will freeze Digital simulation.
 ## Dependencies
 
 - [Digital](https://github.com/hneemann/Digital)
+- [paho](https://www.eclipse.org/paho/)
 
 ## Run from Command Line
 
