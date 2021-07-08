@@ -40,7 +40,27 @@ Note: Not threaded, so all actions will freeze Digital simulation.
 
 - [Digital](https://github.com/hneemann/Digital)
 
-## Install
+## Run from Command Line
+
+1. make sure java (java.exe) is on you PATH (tested with 1.8)
+2. Download paho client: org.eclipse.paho.client.mqttv3-1.2.1.jar
+3. Download Digital
+4. Download mqtt Digital component: mqtt-io-0.0.1-SNAPSHOT.jar
+5. Execute Digital and add MQTT component jar (mqtt-io-0.0.1-SNAPSHOT.jar) to Digital (Edit > Settings / Advanced / Java Library)
+6. Shutdown Digital
+7. Check that MQTT components show in menu (Components/IO/MQTT)
+8. Execute from command line: 
+
+```
+java -cp Digital.jar;org.eclipse.paho.client.mqttv3-1.2.1.jar de.neemann.digital.gui.Main
+```
+
+This assumes a very simple setup (probably not recommended) where:
+- paho client jar is in the same folder than Digital.jar
+- In command line shell, your working folder is the root Digital folder (where Digital.jar is)
+
+
+## Install and Run from source
 
 1. clone repo
 2. build with mvn install

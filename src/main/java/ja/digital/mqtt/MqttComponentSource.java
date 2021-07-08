@@ -5,6 +5,8 @@ import de.neemann.digital.draw.library.ComponentSource;
 import de.neemann.digital.draw.library.ElementLibrary;
 import de.neemann.digital.draw.library.InvalidNodeException;
 import de.neemann.digital.gui.Main;
+import ja.digital.mqtt.components.MqttInByte;
+import ja.digital.mqtt.components.MqttInByteShape;
 import ja.digital.mqtt.components.MqttOutByte;
 
 /**
@@ -21,7 +23,10 @@ public class MqttComponentSource implements ComponentSource {
     public void registerComponents(ComponentManager manager) throws InvalidNodeException {
 
         // add a component and use the default shape
-        manager.addComponent("Mqtt", MqttOutByte.DESCRIPTION);
+        manager.addComponent("IO/MQTT", MqttInByte.DESCRIPTION);
+        manager.addComponent("IO/MQTT", MqttOutByte.DESCRIPTION);
+        // Custom shape
+        //manager.addComponent("MQTT", MqttInByte.DESCRIPTION, MqttInByteShape::new);
     }
 
     /**

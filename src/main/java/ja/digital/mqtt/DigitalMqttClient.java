@@ -16,10 +16,11 @@ public class DigitalMqttClient implements MqttCallback, java.lang.AutoCloseable 
 
 	private static int clientSeq = 0;
     private final int qos = 1;
-    private String topic = "/digital/test01";
+    private String topic = null;
     private MqttClient client;
     
     protected int id = 0;
+    protected byte[] data;
 
     public DigitalMqttClient(String uri, String topic) throws MqttException, URISyntaxException {
         this(new URI(uri),topic);
@@ -56,7 +57,10 @@ public class DigitalMqttClient implements MqttCallback, java.lang.AutoCloseable 
             this.client.setCallback(this);
             this.client.connect(conOpt);
 
-            //this.client.subscribe(this.topic, qos);
+            if (this.topic != null) {
+            	System.out.println("Subscribing to " + this.topic);
+            	this.client.subscribe(this.topic, qos);
+            }
             
         }
         catch (Exception ex) {
@@ -64,7 +68,6 @@ public class DigitalMqttClient implements MqttCallback, java.lang.AutoCloseable 
         }
     }
 
-    
     private String[] getAuth(URI uri) {
         String a = uri.getAuthority();
         String[] first = a.split("@");
@@ -82,16 +85,12 @@ public class DigitalMqttClient implements MqttCallback, java.lang.AutoCloseable 
     	}
     }
     
-    public void sendMessage(String payload) {
+    public void sendMessage(String topic, String payload) {
         MqttMessage message = new MqttMessage(payload.getBytes());
         message.setQos(qos);
         try {
-			this.client.publish(this.topic, message);
-		} catch (MqttPersistenceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MqttException e) {
-			// TODO Auto-generated catch block
+			this.client.publish(topic, message);
+		} catch (Exception e) {
 			e.printStackTrace();
 		} // Blocking publish
     }
@@ -114,6 +113,11 @@ public class DigitalMqttClient implements MqttCallback, java.lang.AutoCloseable 
      */
     public void messageArrived(String topic, MqttMessage message) throws MqttException {
         System.out.println(String.format("id=%s => in: [%s] %s", this.id, topic, new String(message.getPayload())));
+        data = message.getPayload();
+    }
+    
+    public byte[] getData() {
+    	return data;
     }
 
 }

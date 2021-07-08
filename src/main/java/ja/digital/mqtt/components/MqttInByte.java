@@ -16,15 +16,15 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 /**
  * A custom Or component
  */
-public class MqttOutByte extends Node implements Element {
+public class MqttInByte extends Node implements Element {
 
-	protected String mqttTopic = "/digital/mqtt/test01";
-	protected String mqttBroker = "tcp://test.mosquitto.org:1883";
+	protected String mqttTopic = null; //"/digital/mqtt/test01";
+	protected String mqttBroker = null; //"tcp://test.mosquitto.org:1883";
 
 	protected DigitalMqttClient mqttClient;
 	
 	static final Key<String> MYKEY_TOPIC =
-            new Key<String>("mqttTopic", "/digital/mqtt/test")
+            new Key<String>("mqttTopic", "/digital/mqtt/test01")
                     .setName("Topic")
                     .setDescription("The topic.");
 	
@@ -45,20 +45,19 @@ public class MqttOutByte extends Node implements Element {
      * The description of the new component
      */
     public static final ElementTypeDescription DESCRIPTION
-            = new ElementTypeDescription(MqttOutByte.class,
-            input("d", "Data input"),
+            = new ElementTypeDescription(MqttInByte.class,
             input("cc", "Connect control"),
-            input("snd", "Read and send data"))
+            input("rcv", "Receive data"))
             .addAttribute(MYKEY_BROKER)
             .addAttribute(MYKEY_TOPIC)
             .addAttribute(Keys.ROTATE);
 
-    private ObservableValue iobsData;
+    private ObservableValue oobsData;
     private ObservableValue iobsConnControl;
-    private ObservableValue iobsSend;
+    private ObservableValue iobsReceive;
     private ObservableValue oobsConnStatus;
-    private long valConnStatus, valConnControl, valData, valSend;
-    private long valprvConnControl, valprvSend;
+    private long valConnStatus, valConnControl, valData, valReceive;
+    private long valprvConnControl, valprvReceive;
 
     /**
      * Creates a component.
@@ -70,18 +69,15 @@ public class MqttOutByte extends Node implements Element {
      * @throws URISyntaxException 
      * @throws MqttException 
      */
-    public MqttOutByte(ElementAttributes attr) {
-    	
-    	//System.out.println("constructor: broker=" + attr.get(MYKEY_BROKER));
-    	
-        oobsConnStatus = new ObservableValue("cs", 1).setDescription("Connection status");
+    public MqttInByte(ElementAttributes attr) {
+        
+    	oobsConnStatus = new ObservableValue("cs", 1).setDescription("Connection status");
+        oobsData = new ObservableValue("d", 8).setDescription("Data");
         
         this.mqttTopic = attr.get(MYKEY_TOPIC);
         this.mqttBroker = attr.get(MYKEY_BROKER);
         
         System.out.println("broker=" + this.mqttBroker + ", topic=" + this.mqttTopic);
-
-        
     }
 
     /**
@@ -92,31 +88,12 @@ public class MqttOutByte extends Node implements Element {
     @Override
     public void readInputs() {
         
-    	valData = iobsData.getValue();
-        
         valprvConnControl = valConnControl;
         valConnControl = iobsConnControl.getValue();
         
-        valprvSend = valSend;
-        valSend = iobsSend.getValue();
+        valprvReceive = valReceive;
+        valReceive = iobsReceive.getValue();
         
-        try {
-            if (valConnControl == 1 && valprvConnControl == 0) {
-            	System.out.println("Creating MQTT client and connecting");
-            	// TODO: get broker from attr
-        		mqttClient = new DigitalMqttClient(mqttBroker,null);
-            }
-            if (mqttClient != null && valConnControl == 0) {
-            	System.out.println("Destroying MQTT client");
-            	mqttClient.close();
-        		mqttClient = null;
-            }
-        }
-        catch (Exception ex) {
-        	mqttClient = null;
-        	System.err.println("ex: " + ex.getMessage());
-        	ex.printStackTrace();
-        }
         /*
         if (mqttClient != null && valueB != 0) {
         	System.out.println("Sending " + String.valueOf(valueB));
@@ -131,12 +108,36 @@ public class MqttOutByte extends Node implements Element {
      */
     @Override
     public void writeOutputs() {
-    	valConnStatus = (mqttClient == null ? 0 : 1);
-        oobsConnStatus.setValue(valConnStatus);
-        
-        if (valprvSend != valSend && valSend == 1) {
-        	mqttClient.sendMessage(mqttTopic, Long.toHexString(valData));
+    	
+        try {
+            if (valConnControl == 1 && valprvConnControl == 0) {
+        		mqttClient = new DigitalMqttClient(mqttBroker,mqttTopic);
+            }
+            if (mqttClient != null && valConnControl == 0) {
+            	mqttClient.close();
+        		mqttClient = null;
+            }
         }
+        catch (Exception ex) {
+        	mqttClient = null;
+        	System.err.println("ex: " + ex.getMessage());
+        	ex.printStackTrace();
+        }
+
+        valConnStatus = (mqttClient == null ? 0 : 1);
+        oobsConnStatus.setValue(valConnStatus);
+
+        if (valReceive == 1 && valprvReceive == 0) {
+        	byte[] data = mqttClient.getData();
+        	if (data != null && data.length > 0)
+        		oobsData.setValue(data[0]);
+        }
+        
+        /*
+        if (valprvReceive != valReceive && valReceive == 1) {
+        	mqttClient.sendMessage(Long.toHexString(valData));
+        }
+        */
     }
 
     /**
@@ -155,9 +156,8 @@ public class MqttOutByte extends Node implements Element {
      */
     @Override
     public void setInputs(ObservableValues inputs) throws NodeException {
-        iobsData = inputs.get(0).addObserverToValue(this).checkBits(8, this);
-        iobsConnControl = inputs.get(1).addObserverToValue(this).checkBits(1, this);
-        iobsSend = inputs.get(2).addObserverToValue(this).checkBits(1, this);
+        iobsConnControl = inputs.get(0).addObserverToValue(this).checkBits(1, this);
+        iobsReceive = inputs.get(1).addObserverToValue(this).checkBits(1, this);
     }
 
     /**
@@ -167,7 +167,7 @@ public class MqttOutByte extends Node implements Element {
      */
     @Override
     public ObservableValues getOutputs() {
-        return new ObservableValues(oobsConnStatus);
+        return new ObservableValues(oobsConnStatus,oobsData);
     }
     
     @Override

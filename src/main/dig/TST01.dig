@@ -5,7 +5,12 @@
   <visualElements>
     <visualElement>
       <elementName>MqttOutByte</elementName>
-      <elementAttributes/>
+      <elementAttributes>
+        <entry>
+          <string>mqttTopic</string>
+          <string>/digital/mqtt/test01</string>
+        </entry>
+      </elementAttributes>
       <pos x="40" y="120"/>
     </visualElement>
     <visualElement>
@@ -40,12 +45,12 @@
       <elementName>Button</elementName>
       <elementAttributes>
         <entry>
-          <string>Label</string>
-          <string>Send</string>
-        </entry>
-        <entry>
           <string>rotation</string>
           <rotation rotation="1"/>
+        </entry>
+        <entry>
+          <string>Label</string>
+          <string>Send</string>
         </entry>
       </elementAttributes>
       <pos x="-20" y="240"/>
